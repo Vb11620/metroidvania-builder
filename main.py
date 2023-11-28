@@ -12,14 +12,27 @@ ttk.Style(root).theme_use("forest-dark")
 # Make the app responsive
 root.columnconfigure(0, weight=1)
 root.columnconfigure(1, weight=3)
-root.rowconfigure(0, weight=1)
+root.rowconfigure(0, weight=0)
 root.rowconfigure(1, weight=1)
+root.rowconfigure(2, weight=1)
+
+## Tools section
+
+# Open level button
+open_level_button = ttk.Button(root, text="Open")
+open_level_button.grid(row=0, column=0, padx=(20, 5), pady=(10, 5), sticky="nw")
+# TODO: make the open level function
+
+# Sound section
+selected_sound_path = "/res/sound/youll_die.mp3"
+select_sound_button = ttk.Button(root, text=selected_sound_path)
+select_sound_button.grid(row=0, column=0, padx=(5, 5), pady=(10, 5), sticky="n")
 
 ## Textures Section
 
 # Frame for textures treeview
 textures_frame = ttk.LabelFrame(root, text="Textures", padding=(5, 0))
-textures_frame.grid(row=0, column=0, padx=(20, 5), pady=(20, 5), sticky="nsew")
+textures_frame.grid(row=1, column=0, padx=(20, 5), pady=(5, 5), sticky="nsew")
 
 # Textures treeview scrollbar
 textures_treeview_scrollbar = ttk.Scrollbar(textures_frame)
@@ -80,7 +93,7 @@ selected_texture = ""
 
 # Frame for frame path treeview
 frames_frame = ttk.LabelFrame(root, padding=(5, 0))
-frames_frame.grid(row=0, column=1, padx=(5, 20), pady=(20, 10), sticky="nsew")
+frames_frame.grid(row=1, column=1, padx=(5, 20), pady=(5, 10), sticky="nsew")
 
 # Frames treeview scrollbar
 frames_treeview_scrollbar = ttk.Scrollbar(frames_frame)
@@ -139,7 +152,7 @@ remove_frames_button.pack(side=tk.RIGHT, pady=5)
 
 # Frame for elements treeview
 elements_frame = ttk.LabelFrame(root, text="Elements", padding=(5, 0))
-elements_frame.grid(row=1, column=0, padx=(20, 5), pady=(5, 20), sticky="nsew")
+elements_frame.grid(row=2, column=0, padx=(20, 5), pady=(5, 20), sticky="nsew")
 
 # Elements treeview scrollbar
 elements_treeview_scrollbar = ttk.Scrollbar(elements_frame)
@@ -203,8 +216,13 @@ create_element_entry.pack(side=tk.LEFT, pady=5, fill="x", expand=True)
 # TODO: add auto placeholder
 
 # Create element button
-create_element_button = ttk.Button(elements_frame, text="Create")
+create_element_button = ttk.Button(elements_frame, text="Create state")
 create_element_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
+# TODO: activate when create_element_entry is fill
+
+# Create state button
+create_state_button = ttk.Button(elements_frame, text="Create element")
+create_state_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
 # TODO: activate when create_element_entry is fill
 
 
@@ -213,7 +231,7 @@ selected_state = ""
 
 # Frame for state form
 state_frame = ttk.LabelFrame(root, padding=(5, 0))
-state_frame.grid(row=1, column=1, padx=(5, 20), pady=(5, 20), sticky="nsew")
+state_frame.grid(row=2, column=1, padx=(5, 20), pady=(5, 20), sticky="nsew")
 
 # Form for state parameters
 # TODO: Add form inputs
