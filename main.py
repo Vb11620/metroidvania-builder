@@ -1,5 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
+import os
+
+from miscellaneous_dep import *
+from open_level_dialog import open_level_dialog
+
+level_file_path = open_level_dialog()
+
+if not os.path.exists(level_file_path):
+    critical_error(f'File "{level_file_path}" not found')
+log(f"You work on {level_file_path}.")
 
 root = tk.Tk()
 root.title("LevelBuilder")
@@ -18,15 +28,10 @@ root.rowconfigure(2, weight=1)
 
 ## Tools section
 
-# Open level button
-open_level_button = ttk.Button(root, text="Open")
-open_level_button.grid(row=0, column=0, padx=(20, 5), pady=(10, 5), sticky="nw")
-# TODO: make the open level function
-
 # Sound section
 selected_sound_path = "/res/sound/youll_die.mp3"
 select_sound_button = ttk.Button(root, text=selected_sound_path)
-select_sound_button.grid(row=0, column=0, padx=(5, 5), pady=(10, 5), sticky="n")
+select_sound_button.grid(row=0, column=0, padx=(20, 5), pady=(10, 5), sticky="nw")
 
 ## Textures Section
 
