@@ -1,5 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
+from colorama import Fore
+import os
+
+from open_level_dialog import open_level_dialog
+
+level_file_path = open_level_dialog()
+
+if not os.path.exists(level_file_path):
+    exit(f'{Fore.RED}>> Error: File "{level_file_path}" not find{Fore.RESET}')
+print(f">> You work on {level_file_path}.")
 
 root = tk.Tk()
 root.title("LevelBuilder")
@@ -19,7 +29,7 @@ root.rowconfigure(2, weight=1)
 ## Tools section
 
 # Open level button
-open_level_button = ttk.Button(root, text="Open")
+open_level_button = ttk.Button(root, text="Open", command=open_level_dialog)
 open_level_button.grid(row=0, column=0, padx=(20, 5), pady=(10, 5), sticky="nw")
 # TODO: make the open level function
 
