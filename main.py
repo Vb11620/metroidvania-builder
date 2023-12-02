@@ -1,15 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
-from colorama import Fore
 import os
 
+from miscellaneous_dep import *
 from open_level_dialog import open_level_dialog
 
 level_file_path = open_level_dialog()
 
 if not os.path.exists(level_file_path):
-    exit(f'{Fore.RED}>> Error: File "{level_file_path}" not find{Fore.RESET}')
-print(f">> You work on {level_file_path}.")
+    critical_error(f'File "{level_file_path}" not find')
+log(f"You work on {level_file_path}.")
 
 root = tk.Tk()
 root.title("LevelBuilder")
