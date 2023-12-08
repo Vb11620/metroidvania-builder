@@ -77,11 +77,11 @@ def update_textures_treeview():
     textures_name_list = []
     for texture in textures_root:
         textures_name_list.append(texture.tag)
+    textures_treeview.delete(*textures_treeview.get_children())
     iid = 0
     for texture_name in textures_name_list:
         textures_treeview.insert("", "end", str(iid), text=texture_name)
         iid += 1
-    # TODO: change to update with the real values
 
 
 update_textures_treeview()
@@ -101,9 +101,6 @@ create_texture_button = ttk.Button(textures_frame, text="Create")
 create_texture_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
 # TODO: activate when create_texture_entry is fill
 
-
-# var with the name of the selected texture
-selected_texture = ""
 
 # Frame for frame path treeview
 frames_frame = ttk.LabelFrame(root, padding=(5, 0))
@@ -129,30 +126,52 @@ frames_treeview.pack(expand=True, fill="both")
 frames_treeview_scrollbar.config(command=frames_treeview.yview)
 
 
-def update_frames_frame():
-    selected_texture = "texture_porte_1"
+def update_frames_frame(*_):
+    selected_texture = textures_treeview.item(textures_treeview.selection()[0])["text"]
     frames_frame.config(text=selected_texture)
-    # TODO: change with the real value of the selection
 
-    test_frames_path_list = [
-        "/res/ttttt_0.png",
-        "/res/zeedffc_0.png",
-        "/res/ttttt_1.png",
-        "/res/ttttt_2.png",
-        "/res/ttttt_3.png",
-        "/res/ttttt_4.png",
-        "/res/azedc_0.png",
-    ]
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    textures_root = level_root.find("textures")
+    if textures_root is None:
+        # création de la balise <textures> si elle n'existe pas
+        Et.SubElement(level_root, "textures")
+        level_file.write(level_file_path)
+        textures_root = level_root.find("textures")
+        if textures_root is not None:
+            log('"<textures>" créé avec succès')
+        else:
+            exit(
+                f'{Fore.RED}>> Error: "<textures>" can\'t be created, check the integrity of the file{Fore.RESET}'
+            )
+    frames_root = textures_root.find(selected_texture)
+    if frames_root is None:
+        # création de la balise <{selected_texture}> si elle n'existe pas
+        Et.SubElement(textures_root, selected_texture)
+        level_file.write(level_file_path)
+        frames_root = textures_root.find(selected_texture)
+        if frames_root is not None:
+            log(f'"<{selected_texture}>" crée avec succès')
+        else:
+            exit(
+                f"{Fore.RED}>> Error: \"<{selected_texture}> can't be created, check the integrity of the file{Fore.RESET}"
+            )
+
+    frames_path_list = []
+    for frame in frames_root:
+        frames_path_list.append(frame.get("path"))
+
+    frames_treeview.delete(*frames_treeview.get_children())
     iid = 0
-    for frame_path in test_frames_path_list:
+    for frame_path in frames_path_list:
         frames_treeview.insert("", "end", str(iid), text=frame_path)
         iid += 1
-    # TODO: change to update with the real values
 
 
 textures_treeview.selection_set("0")
 update_frames_frame()
-# TODO: add event to update setlected textures on double click
+textures_treeview.bind("<ButtonRelease-1>", update_frames_frame)
 
 # Add frames button
 add_frames_button = ttk.Button(frames_frame, text="Add", style="Accent.TButton")
