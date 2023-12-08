@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
+import xml.etree.ElementTree as Et
 import os
+from colorama import Fore
+
 
 from miscellaneous_dep import *
 from open_level_dialog import open_level_dialog
@@ -55,21 +58,27 @@ textures_treeview_scrollbar.config(command=textures_treeview.yview)
 
 
 def update_textures_treeview():
-    test_textures_name_list = [
-        "background",
-        "foreground",
-        "plateforme1",
-        "plateforme2",
-        "plateforme3",
-        "plateforme4",
-        "porte1",
-        "porte2",
-        "test1",
-        "test2",
-        "test3",
-    ]
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    textures_root = level_root.find("textures")
+    if textures_root is None:
+        # création de la balise <textures> si elle n'existe pas
+        Et.SubElement(level_root, "textures")
+        level_file.write(level_file_path)
+        textures_root = level_root.find("textures")
+        if textures_root is not None:
+            log('"<textures>" créé avec succès')
+        else:
+            exit(
+                f'{Fore.RED}>> Error: "<textures>" can\'t be created, check the integrity of the file{Fore.RESET}'
+            )
+
+    textures_name_list = []
+    for texture in textures_root:
+        textures_name_list.append(texture.tag)
     iid = 0
-    for texture_name in test_textures_name_list:
+    for texture_name in textures_name_list:
         textures_treeview.insert("", "end", str(iid), text=texture_name)
         iid += 1
     # TODO: change to update with the real values
