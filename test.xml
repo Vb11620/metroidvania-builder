@@ -1,1 +1,29 @@
-<selectLevelFileWindow></selectLevelFileWindow>
+<root>
+  <textures>
+    <foreground>
+      <frame path="res/textures/foreground1.1.png" />
+      <frame path="res/textures/foreground1.2.png" />
+      <frame path="res/textures/foreground1.3.png" />
+    </foreground>
+    <background>
+      <frame path="res/textures/background1.1.png" />
+      <frame path="res/textures/background1.2.png" />
+      <frame path="res/textures/background1.3.png" />
+    </background>
+    <door>
+      <frame path="res/textures/door1.1.png" />
+      <frame path="res/textures/door1.1.png" />
+    </door>
+  </textures>
+  <elements>
+    <door1 id="doors">
+      <default />
+      <close />
+    </door1>
+    <door2 id="doors">
+      <default />
+      <close />
+      <burned />
+    </door2>
+  </elements>
+</root>
