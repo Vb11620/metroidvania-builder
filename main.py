@@ -171,7 +171,7 @@ def update_frames_frame(*_):
 
 textures_treeview.selection_set("0")
 update_frames_frame()
-textures_treeview.bind("<ButtonRelease-1>", update_frames_frame)
+textures_treeview.bind("<<TreeviewSelect>>", update_frames_frame)
 
 # Add frames button
 add_frames_button = ttk.Button(frames_frame, text="Add", style="Accent.TButton")
