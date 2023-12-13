@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 import os
-from colorama import Fore
 
 
 from miscellaneous_dep import *
