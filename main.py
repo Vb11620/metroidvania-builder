@@ -1,12 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
-import xml.etree.ElementTree as Et
 import os
 from colorama import Fore
 
 
 from miscellaneous_dep import *
 from open_level_dialog import open_level_dialog
+from xml_dep import *
 
 level_file_path = open_level_dialog()
 
@@ -61,18 +61,9 @@ def update_textures_treeview():
     level_file = Et.parse(level_file_path)
     level_root = level_file.getroot()
 
-    textures_root = level_root.find("textures")
-    if textures_root is None:
-        # création de la balise <textures> si elle n'existe pas
-        Et.SubElement(level_root, "textures")
-        level_file.write(level_file_path)
-        textures_root = level_root.find("textures")
-        if textures_root is not None:
-            log('"<textures>" créé avec succès')
-        else:
-            exit(
-                f'{Fore.RED}>> Error: "<textures>" can\'t be created, check the integrity of the file{Fore.RESET}'
-            )
+    textures_root = get_element_by_name_forced(
+        level_root, "textures", level_file, level_file_path
+    )
 
     textures_name_list = []
     for texture in textures_root:
@@ -133,30 +124,12 @@ def update_frames_frame(*_):
     level_file = Et.parse(level_file_path)
     level_root = level_file.getroot()
 
-    textures_root = level_root.find("textures")
-    if textures_root is None:
-        # création de la balise <textures> si elle n'existe pas
-        Et.SubElement(level_root, "textures")
-        level_file.write(level_file_path)
-        textures_root = level_root.find("textures")
-        if textures_root is not None:
-            log('"<textures>" créé avec succès')
-        else:
-            exit(
-                f'{Fore.RED}>> Error: "<textures>" can\'t be created, check the integrity of the file{Fore.RESET}'
-            )
-    frames_root = textures_root.find(selected_texture)
-    if frames_root is None:
-        # création de la balise <{selected_texture}> si elle n'existe pas
-        Et.SubElement(textures_root, selected_texture)
-        level_file.write(level_file_path)
-        frames_root = textures_root.find(selected_texture)
-        if frames_root is not None:
-            log(f'"<{selected_texture}>" crée avec succès')
-        else:
-            exit(
-                f"{Fore.RED}>> Error: \"<{selected_texture}> can't be created, check the integrity of the file{Fore.RESET}"
-            )
+    textes_root = get_element_by_name_forced(
+        level_root, "textures", level_file, level_file_path
+    )
+    frames_root = get_element_by_name_forced(
+        textes_root, selected_texture, level_file, level_file_path
+    )
 
     frames_path_list = []
     for frame in frames_root:
