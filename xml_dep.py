@@ -13,7 +13,7 @@ def get_element_by_name_forced(
         file.write(file_path)
         element = element_root.find(element_name)
         if element is not None:
-            log(f'"<{element_name}>" créé avec succès')
+            log(f'"<{element_root.tag}>/<{element_name}>" créé avec succès')
         else:
             exit(
                 f'{Fore.RED}>> Error: "<{element_name}>" can\'t be created, check the integrity of the file{Fore.RESET}'
