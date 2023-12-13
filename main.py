@@ -14,7 +14,7 @@ if not os.path.exists(level_file_path):
 log(f"You work on {level_file_path}.")
 
 root = tk.Tk()
-root.title("LevelBuilder")
+root.title(f"LevelBuilder - {level_file_path}")
 root.option_add("*teaOff", False)
 
 # Import and apply the theme
