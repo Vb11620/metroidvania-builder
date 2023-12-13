@@ -67,6 +67,19 @@ def update_textures_treeview():
     textures_name_list = []
     for texture in textures_root:
         textures_name_list.append(texture.tag)
+
+    if textures_name_list == []:
+        textures_name_list.append(
+            get_element_by_name_forced(
+                textures_root, "foreground", level_file, level_file_path
+            ).tag
+        )
+        textures_name_list.append(
+            get_element_by_name_forced(
+                textures_root, "background", level_file, level_file_path
+            ).tag
+        )
+
     textures_treeview.delete(*textures_treeview.get_children())
     iid = 0
     for texture_name in textures_name_list:
@@ -123,11 +136,11 @@ def update_frames_frame(*_):
     level_file = Et.parse(level_file_path)
     level_root = level_file.getroot()
 
-    textes_root = get_element_by_name_forced(
+    textures_root = get_element_by_name_forced(
         level_root, "textures", level_file, level_file_path
     )
     frames_root = get_element_by_name_forced(
-        textes_root, selected_texture, level_file, level_file_path
+        textures_root, selected_texture, level_file, level_file_path
     )
 
     frames_path_list = []
@@ -197,6 +210,16 @@ def update_elements_treeview():
         for state in element:
             state_list.append(state.tag)
         elements_list.append(tuple([element.tag, element.get("id")] + state_list))
+
+    if elements_list == []:
+        ground = get_element_by_name_forced(
+            elements_root, "ground", level_file, level_file_path
+        )
+        ground.set("id", "default")
+        default_ground_state = get_element_by_name_forced(
+            ground, "default", level_file, level_file_path
+        )
+        elements_list.append((ground.tag, ground.get("id"), default_ground_state.tag))
 
     iid = 0
     for element in elements_list:
