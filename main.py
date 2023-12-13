@@ -184,19 +184,22 @@ elements_treeview.heading(1, text="Id", anchor="w")
 
 
 def update_elements_treeview():
-    test_elements_list = [
-        ("plateforme1", "default", "default"),
-        ("plateforme2", "default", "default"),
-        ("porte1", "p1", "open", "close"),
-        ("porte2", "p2", "open", "close"),
-        ("porte3", "p3", "open", "close"),
-        ("ladder1", "default", "default"),
-        ("switch1", "p1", "activate", "desactivate"),
-        ("switch2", "p2", "activate", "desactivate"),
-        ("switch2", "p3", "activate", "desactivate"),
-    ]
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    elements_root = get_element_by_name_forced(
+        level_root, "elements", level_file, level_file_path
+    )
+
+    elements_list = []
+    for element in elements_root:
+        state_list = []
+        for state in element:
+            state_list.append(state.tag)
+        elements_list.append(tuple([element.tag, element.get("id")] + state_list))
+
     iid = 0
-    for element in test_elements_list:
+    for element in elements_list:
         elements_treeview.insert(
             "", "end", str(iid), text=element[0], values=element[1]
         )
