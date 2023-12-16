@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
 <root>
+  <sound path="res/sound/you'll_die.mp3"/>
   <textures>
     <foreground>
       <frame path="res/textures/foreground1.1.png" />
