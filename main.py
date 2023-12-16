@@ -31,9 +31,24 @@ root.rowconfigure(2, weight=1)
 ## Tools section
 
 # Sound section
-selected_sound_path = "/res/sound/youll_die.mp3"
-select_sound_button = ttk.Button(root, text=selected_sound_path)
+sound_path = ""
+
+
+def update_sound_button():
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    sound_path = get_element_by_name_forced(
+        level_root, "sound", level_file, level_file_path
+    ).get("path")
+
+    select_sound_button["text"] = sound_path
+
+
+select_sound_button = ttk.Button(root, text=sound_path)
 select_sound_button.grid(row=0, column=0, padx=(20, 5), pady=(10, 5), sticky="nw")
+
+update_sound_button()
 
 ## Textures Section
 
@@ -219,9 +234,7 @@ def update_elements_treeview():
         default_ground_state = get_element_by_name_forced(
             ground, "default", level_file, level_file_path
         )
-        elements_list.append(
-            (ground.tag[0], ground.get("id"), default_ground_state.tag)
-        )
+        elements_list.append((ground.tag, ground.get("id"), default_ground_state.tag))
 
     iid = 0
     for element in elements_list:
