@@ -2,8 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 import os
 
+
 from miscellaneous_dep import *
 from open_level_dialog import open_level_dialog
+from xml_dep import *
 
 level_file_path = open_level_dialog()
 
@@ -12,7 +14,7 @@ if not os.path.exists(level_file_path):
 log(f"You work on {level_file_path}.")
 
 root = tk.Tk()
-root.title("LevelBuilder")
+root.title(f"LevelBuilder - {level_file_path}")
 root.option_add("*teaOff", False)
 
 # Import and apply the theme
@@ -29,9 +31,24 @@ root.rowconfigure(2, weight=1)
 ## Tools section
 
 # Sound section
-selected_sound_path = "/res/sound/youll_die.mp3"
-select_sound_button = ttk.Button(root, text=selected_sound_path)
+sound_path = ""
+
+
+def update_sound_button():
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    sound_path = get_element_by_name_forced(
+        level_root, "sound", level_file, level_file_path
+    ).get("path")
+
+    select_sound_button["text"] = sound_path
+
+
+select_sound_button = ttk.Button(root, text=sound_path)
 select_sound_button.grid(row=0, column=0, padx=(20, 5), pady=(10, 5), sticky="nw")
+
+update_sound_button()
 
 ## Textures Section
 
@@ -55,24 +72,34 @@ textures_treeview_scrollbar.config(command=textures_treeview.yview)
 
 
 def update_textures_treeview():
-    test_textures_name_list = [
-        "background",
-        "foreground",
-        "plateforme1",
-        "plateforme2",
-        "plateforme3",
-        "plateforme4",
-        "porte1",
-        "porte2",
-        "test1",
-        "test2",
-        "test3",
-    ]
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    textures_root = get_element_by_name_forced(
+        level_root, "textures", level_file, level_file_path
+    )
+
+    textures_name_list = []
+    for texture in textures_root:
+        textures_name_list.append(texture.tag)
+
+    if textures_name_list == []:
+        textures_name_list.append(
+            get_element_by_name_forced(
+                textures_root, "foreground", level_file, level_file_path
+            ).tag
+        )
+        textures_name_list.append(
+            get_element_by_name_forced(
+                textures_root, "background", level_file, level_file_path
+            ).tag
+        )
+
+    textures_treeview.delete(*textures_treeview.get_children())
     iid = 0
-    for texture_name in test_textures_name_list:
+    for texture_name in textures_name_list:
         textures_treeview.insert("", "end", str(iid), text=texture_name)
         iid += 1
-    # TODO: change to update with the real values
 
 
 update_textures_treeview()
@@ -92,9 +119,6 @@ create_texture_button = ttk.Button(textures_frame, text="Create")
 create_texture_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
 # TODO: activate when create_texture_entry is fill
 
-
-# var with the name of the selected texture
-selected_texture = ""
 
 # Frame for frame path treeview
 frames_frame = ttk.LabelFrame(root, padding=(5, 0))
@@ -120,30 +144,34 @@ frames_treeview.pack(expand=True, fill="both")
 frames_treeview_scrollbar.config(command=frames_treeview.yview)
 
 
-def update_frames_frame():
-    selected_texture = "texture_porte_1"
+def update_frames_frame(*_):
+    selected_texture = textures_treeview.item(textures_treeview.selection()[0])["text"]
     frames_frame.config(text=selected_texture)
-    # TODO: change with the real value of the selection
 
-    test_frames_path_list = [
-        "/res/ttttt_0.png",
-        "/res/zeedffc_0.png",
-        "/res/ttttt_1.png",
-        "/res/ttttt_2.png",
-        "/res/ttttt_3.png",
-        "/res/ttttt_4.png",
-        "/res/azedc_0.png",
-    ]
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    textures_root = get_element_by_name_forced(
+        level_root, "textures", level_file, level_file_path
+    )
+    frames_root = get_element_by_name_forced(
+        textures_root, selected_texture, level_file, level_file_path
+    )
+
+    frames_path_list = []
+    for frame in frames_root:
+        frames_path_list.append(frame.get("path"))
+
+    frames_treeview.delete(*frames_treeview.get_children())
     iid = 0
-    for frame_path in test_frames_path_list:
+    for frame_path in frames_path_list:
         frames_treeview.insert("", "end", str(iid), text=frame_path)
         iid += 1
-    # TODO: change to update with the real values
 
 
 textures_treeview.selection_set("0")
 update_frames_frame()
-# TODO: add event to update setlected textures on double click
+textures_treeview.bind("<<TreeviewSelect>>", update_frames_frame)
 
 # Add frames button
 add_frames_button = ttk.Button(frames_frame, text="Add", style="Accent.TButton")
@@ -184,19 +212,32 @@ elements_treeview.heading(1, text="Id", anchor="w")
 
 
 def update_elements_treeview():
-    test_elements_list = [
-        ("plateforme1", "default", "default"),
-        ("plateforme2", "default", "default"),
-        ("porte1", "p1", "open", "close"),
-        ("porte2", "p2", "open", "close"),
-        ("porte3", "p3", "open", "close"),
-        ("ladder1", "default", "default"),
-        ("switch1", "p1", "activate", "desactivate"),
-        ("switch2", "p2", "activate", "desactivate"),
-        ("switch2", "p3", "activate", "desactivate"),
-    ]
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    elements_root = get_element_by_name_forced(
+        level_root, "elements", level_file, level_file_path
+    )
+
+    elements_list = []
+    for element in elements_root:
+        state_list = []
+        for state in element:
+            state_list.append(state.tag)
+        elements_list.append(tuple([element.tag, element.get("id")] + state_list))
+
+    if elements_list == []:
+        ground = get_element_by_name_forced(
+            elements_root, "ground", level_file, level_file_path
+        )
+        ground.set("id", "default")
+        default_ground_state = get_element_by_name_forced(
+            ground, "default", level_file, level_file_path
+        )
+        elements_list.append((ground.tag, ground.get("id"), default_ground_state.tag))
+
     iid = 0
-    for element in test_elements_list:
+    for element in elements_list:
         elements_treeview.insert(
             "", "end", str(iid), text=element[0], values=element[1]
         )
@@ -205,7 +246,6 @@ def update_elements_treeview():
             iid += 1
             elements_treeview.insert(str(parent), "end", str(iid), text=state)
         iid += 1
-    # TODO: change to update with the real values
 
 
 update_elements_treeview()
@@ -242,16 +282,16 @@ state_frame.grid(row=2, column=1, padx=(5, 20), pady=(5, 20), sticky="nsew")
 # TODO: Add form inputs
 
 
-def update_element_form():
-    selected_state = "porte1 - open"
-    state_frame.config(text=selected_state)
-    # TODO: change with real value
+def update_element_frame(*_):
+    parent_iid = elements_treeview.parent(elements_treeview.selection()[0])
+    if parent_iid != "":
+        selected_state = f"{elements_treeview.item(parent_iid)['text']} - {elements_treeview.item(elements_treeview.selection()[0])['text']}"
+        state_frame.config(text=selected_state)
 
 
 elements_treeview.selection_set("0")
-update_element_form()
-# TODO: add event to update state form on double click
-
+update_element_frame()
+elements_treeview.bind("<<TreeviewSelect>>", update_element_frame)
 
 # Center the window and set minsize
 root.update()
