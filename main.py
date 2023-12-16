@@ -219,7 +219,9 @@ def update_elements_treeview():
         default_ground_state = get_element_by_name_forced(
             ground, "default", level_file, level_file_path
         )
-        elements_list.append((ground.tag, ground.get("id"), default_ground_state.tag))
+        elements_list.append(
+            (ground.tag[0], ground.get("id"), default_ground_state.tag)
+        )
 
     iid = 0
     for element in elements_list:
@@ -231,7 +233,6 @@ def update_elements_treeview():
             iid += 1
             elements_treeview.insert(str(parent), "end", str(iid), text=state)
         iid += 1
-    # TODO: change to update with the real values
 
 
 update_elements_treeview()
@@ -268,16 +269,16 @@ state_frame.grid(row=2, column=1, padx=(5, 20), pady=(5, 20), sticky="nsew")
 # TODO: Add form inputs
 
 
-def update_element_form():
-    selected_state = "porte1 - open"
-    state_frame.config(text=selected_state)
-    # TODO: change with real value
+def update_element_frame(*_):
+    parent_iid = elements_treeview.parent(elements_treeview.selection()[0])
+    if parent_iid != "":
+        selected_state = f"{elements_treeview.item(parent_iid)['text']} - {elements_treeview.item(elements_treeview.selection()[0])['text']}"
+        state_frame.config(text=selected_state)
 
 
 elements_treeview.selection_set("0")
-update_element_form()
-# TODO: add event to update state form on double click
-
+update_element_frame()
+elements_treeview.bind("<<TreeviewSelect>>", update_element_frame)
 
 # Center the window and set minsize
 root.update()
