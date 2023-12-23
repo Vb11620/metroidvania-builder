@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import StringVar, ttk
 import os
 
 
@@ -110,15 +110,27 @@ delete_texture_button = ttk.Button(textures_frame, text="Delete")
 delete_texture_button.pack(side=tk.LEFT, padx=(0, 5), pady=5)
 
 # Texture entry
-create_texture_entry = ttk.Entry(textures_frame)
+create_texture_entry_stringVar = StringVar()
+create_texture_entry = ttk.Entry(
+    textures_frame, textvariable=create_texture_entry_stringVar
+)
 create_texture_entry.pack(side=tk.LEFT, pady=5, fill="x", expand=True)
 # TODO: add auto placeholder
 
 # Create texture button
 create_texture_button = ttk.Button(textures_frame, text="Create")
 create_texture_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
-# TODO: activate when create_texture_entry is fill
 
+
+# Activate when create_texture_entry is fill
+def update_create_texture_button(*_):
+    if create_texture_entry.get() != "":
+        create_texture_button["style"] = "Accent.TButton"
+    else:
+        create_texture_button["style"] = "TButton"
+
+
+create_texture_entry_stringVar.trace("w", update_create_texture_button)
 
 # Frame for frame path treeview
 frames_frame = ttk.LabelFrame(root, padding=(5, 0))
