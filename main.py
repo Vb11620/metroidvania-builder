@@ -268,19 +268,33 @@ delete_element_button = ttk.Button(elements_frame, text="Delete")
 delete_element_button.pack(side=tk.LEFT, padx=(0, 5), pady=5)
 
 # Element entry
-create_element_entry = ttk.Entry(elements_frame)
+create_element_entry_stringVar = StringVar()
+create_element_entry = ttk.Entry(
+    elements_frame, textvariable=create_element_entry_stringVar
+)
 create_element_entry.pack(side=tk.LEFT, pady=5, fill="x", expand=True)
 # TODO: add auto placeholder
 
 # Create element button
 create_element_button = ttk.Button(elements_frame, text="Create state")
 create_element_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
-# TODO: activate when create_element_entry is fill
 
 # Create state button
 create_state_button = ttk.Button(elements_frame, text="Create element")
 create_state_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
-# TODO: activate when create_element_entry is fill
+
+
+# Activate the buttons when create_element_entry is fill
+def update_elements_buttons(*_):
+    if create_element_entry.get() != "":
+        create_element_button["style"] = "Accent.TButton"
+        create_state_button["style"] = "Accent.TButton"
+    else:
+        create_element_button["style"] = "TButton"
+        create_state_button["style"] = "TButton"
+
+
+create_element_entry_stringVar.trace("w", update_elements_buttons)
 
 
 # var with the name of the selected state
