@@ -328,6 +328,8 @@ def uptate_all_data(*_):
     update_state_frame()
 
 
+root.bind("<<uptate_all_data>>", uptate_all_data)
+
 # Center the window and set minsize
 root.update()
 root.minsize(root.winfo_width(), root.winfo_height())
