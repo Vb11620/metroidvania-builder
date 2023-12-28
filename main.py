@@ -39,11 +39,13 @@ def update_sound_button():
     level_file = Et.parse(level_file_path)
     level_root = level_file.getroot()
 
-    sound_path_str = get_element_by_name_forced(
-        level_root, "sound", level_file, level_file_path
-    ).get("path")
-    if sound_path_str is not None:
-        sound_path.set(sound_path_str)
+    sound_element = level_root.find("sound")
+    if sound_element is not None:
+        sound_path_str = sound_element.get("path")
+        if sound_path_str is not None:
+            sound_path.set(sound_path_str)
+        else:
+            sound_path.set("")
     else:
         sound_path.set("")
 
@@ -53,15 +55,16 @@ def select_sound():
         initialdir="res/levels/",
         filetypes=(("Level files", "*.xml"), ("All files", "*.*")),
     )
-    level_file = Et.parse(level_file_path)
-    level_root = level_file.getroot()
+    if isinstance(sound_path_str, str):
+        level_file = Et.parse(level_file_path)
+        level_root = level_file.getroot()
 
-    sound_element = level_root.find("sound")
-    if sound_element is not None:
-        level_root.remove(sound_element)
-    if sound_path_str != "":
-        Et.SubElement(level_root, "sound").set("path", sound_path_str)
-    level_file.write(level_file_path)
+        sound_element = level_root.find("sound")
+        if sound_element is not None:
+            level_root.remove(sound_element)
+        if sound_path_str != "":
+            Et.SubElement(level_root, "sound").set("path", sound_path_str)
+        level_file.write(level_file_path)
 
 
 select_sound_button = ttk.Button(root, textvariable=sound_path, command=select_sound)
