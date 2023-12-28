@@ -66,6 +66,8 @@ def select_sound():
             Et.SubElement(level_root, "sound").set("path", sound_path_str)
         level_file.write(level_file_path)
 
+    root.event_generate("<<uptate_all_data>>")
+
 
 select_sound_button = ttk.Button(root, textvariable=sound_path, command=select_sound)
 select_sound_button.grid(row=0, column=0, padx=(20, 5), pady=(10, 5), sticky="nw")
