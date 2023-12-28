@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.filedialog
 from tkinter import StringVar, ttk
 import os
 
@@ -31,21 +32,39 @@ root.rowconfigure(2, weight=1)
 ## Tools section
 
 # Sound section
-sound_path = ""
+sound_path = StringVar()
 
 
 def update_sound_button():
     level_file = Et.parse(level_file_path)
     level_root = level_file.getroot()
 
-    sound_path = get_element_by_name_forced(
+    sound_path_str = get_element_by_name_forced(
         level_root, "sound", level_file, level_file_path
     ).get("path")
+    if sound_path_str is not None:
+        sound_path.set(sound_path_str)
+    else:
+        sound_path.set("")
 
-    select_sound_button["text"] = sound_path
+
+def select_sound():
+    sound_path_str = tkinter.filedialog.askopenfilename(
+        initialdir="res/levels/",
+        filetypes=(("Level files", "*.xml"), ("All files", "*.*")),
+    )
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    sound_element = level_root.find("sound")
+    if sound_element is not None:
+        level_root.remove(sound_element)
+    if sound_path_str != "":
+        Et.SubElement(level_root, "sound").set("path", sound_path_str)
+    level_file.write(level_file_path)
 
 
-select_sound_button = ttk.Button(root, text=sound_path)
+select_sound_button = ttk.Button(root, textvariable=sound_path, command=select_sound)
 select_sound_button.grid(row=0, column=0, padx=(20, 5), pady=(10, 5), sticky="nw")
 
 update_sound_button()
