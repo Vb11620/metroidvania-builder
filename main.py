@@ -308,7 +308,7 @@ state_frame.grid(row=2, column=1, padx=(5, 20), pady=(5, 20), sticky="nsew")
 # TODO: Add form inputs
 
 
-def update_element_frame(*_):
+def update_state_frame(*_):
     parent_iid = elements_treeview.parent(elements_treeview.selection()[0])
     if parent_iid != "":
         selected_state = f"{elements_treeview.item(parent_iid)['text']} - {elements_treeview.item(elements_treeview.selection()[0])['text']}"
@@ -316,8 +316,19 @@ def update_element_frame(*_):
 
 
 elements_treeview.selection_set("0")
-update_element_frame()
-elements_treeview.bind("<<TreeviewSelect>>", update_element_frame)
+update_state_frame()
+elements_treeview.bind("<<TreeviewSelect>>", update_state_frame)
+
+
+# Function to uptate all
+def uptate_all_data(*_):
+    update_sound_button()
+    update_textures_treeview()
+    update_frames_frame()
+    update_state_frame()
+
+
+root.bind("<<uptate_all_data>>", uptate_all_data)
 
 # Center the window and set minsize
 root.update()
