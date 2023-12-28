@@ -272,6 +272,9 @@ def update_elements_treeview():
         )
         elements_list.append((ground.tag, ground.get("id"), default_ground_state.tag))
 
+    for i in elements_treeview.get_children():
+        elements_treeview.delete(i)
+
     iid = 0
     for element in elements_list:
         elements_treeview.insert(
@@ -285,7 +288,6 @@ def update_elements_treeview():
 
 
 update_elements_treeview()
-# TODO: add event to refresh
 
 # Delete element button
 delete_element_button = ttk.Button(elements_frame, text="Delete")
@@ -348,7 +350,10 @@ elements_treeview.bind("<<TreeviewSelect>>", update_state_frame)
 def uptate_all_data(*_):
     update_sound_button()
     update_textures_treeview()
+    textures_treeview.selection_set("0")
     update_frames_frame()
+    update_elements_treeview()
+    elements_treeview.selection_set("0")
     update_state_frame()
 
 
