@@ -8,7 +8,8 @@ from miscellaneous_dep import *
 from open_level_dialog import open_level_dialog
 from xml_dep import *
 
-level_file_path = open_level_dialog()
+# level_file_path = open_level_dialog()
+level_file_path = "/home/vincent/Projets/metroidvania-builder/test.xml"
 
 if not os.path.exists(level_file_path):
     critical_error(f'File "{level_file_path}" not found')
@@ -130,7 +131,28 @@ update_textures_treeview()
 # TODO: add event to update
 
 # Delete texture button
-delete_texture_button = ttk.Button(textures_frame, text="Delete")
+
+
+def delete_texture():
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    textures_root = get_element_by_name_forced(
+        level_root, "textures", level_file, level_file_path
+    )
+    selected_texture_iid = textures_treeview.selection()[0]
+    selected_texture_name = textures_treeview.item(selected_texture_iid)["text"]
+
+    remove_element_by_name(
+        textures_root, selected_texture_name, level_file, level_file_path
+    )
+
+    root.event_generate("<<uptate_all_data>>")
+
+
+delete_texture_button = ttk.Button(
+    textures_frame, text="Delete", command=delete_texture
+)
 delete_texture_button.pack(side=tk.LEFT, padx=(0, 5), pady=5)
 
 # Texture entry
