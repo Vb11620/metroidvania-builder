@@ -128,27 +128,27 @@ def update_textures_treeview():
 
 
 update_textures_treeview()
-# TODO: add event to update
 
 # Delete texture button
 
 
 def delete_texture():
-    level_file = Et.parse(level_file_path)
-    level_root = level_file.getroot()
+    if textures_treeview.selection() != ():
+        level_file = Et.parse(level_file_path)
+        level_root = level_file.getroot()
 
-    textures_root = get_element_by_name_forced(
-        level_root, "textures", level_file, level_file_path
-    )
-    selected_texture_name = textures_treeview.item(textures_treeview.selection()[0])[
-        "text"
-    ]
+        textures_root = get_element_by_name_forced(
+            level_root, "textures", level_file, level_file_path
+        )
+        selected_texture_name = textures_treeview.item(
+            textures_treeview.selection()[0]
+        )["text"]
 
-    remove_element_by_name(
-        textures_root, selected_texture_name, level_file, level_file_path
-    )
+        remove_element_by_name(
+            textures_root, selected_texture_name, level_file, level_file_path
+        )
 
-    root.event_generate("<<uptate_all_data>>")
+        root.event_generate("<<uptate_all_data>>")
 
 
 delete_texture_button = ttk.Button(
@@ -204,31 +204,36 @@ frames_treeview_scrollbar.config(command=frames_treeview.yview)
 
 
 def update_frames_frame(*_):
-    selected_texture = textures_treeview.item(textures_treeview.selection()[0])["text"]
-    frames_frame.config(text=selected_texture)
+    if textures_treeview.selection() != ():
+        selected_texture = textures_treeview.item(textures_treeview.selection()[0])[
+            "text"
+        ]
+        frames_frame.config(text=selected_texture)
 
-    level_file = Et.parse(level_file_path)
-    level_root = level_file.getroot()
+        level_file = Et.parse(level_file_path)
+        level_root = level_file.getroot()
 
-    textures_root = get_element_by_name_forced(
-        level_root, "textures", level_file, level_file_path
-    )
-    frames_root = get_element_by_name_forced(
-        textures_root, selected_texture, level_file, level_file_path
-    )
+        textures_root = get_element_by_name_forced(
+            level_root, "textures", level_file, level_file_path
+        )
+        frames_root = get_element_by_name_forced(
+            textures_root, selected_texture, level_file, level_file_path
+        )
 
-    frames_path_list = []
-    for frame in frames_root:
-        frames_path_list.append(frame.get("path"))
+        frames_path_list = []
+        for frame in frames_root:
+            frames_path_list.append(frame.get("path"))
 
-    frames_treeview.delete(*frames_treeview.get_children())
-    iid = 0
-    for frame_path in frames_path_list:
-        frames_treeview.insert("", "end", str(iid), text=frame_path)
-        iid += 1
+        frames_treeview.delete(*frames_treeview.get_children())
+        iid = 0
+        for frame_path in frames_path_list:
+            frames_treeview.insert("", "end", str(iid), text=frame_path)
+            iid += 1
+    else:
+        frames_treeview.delete(*frames_treeview.get_children())
+        frames_frame.config(text="")
 
 
-textures_treeview.selection_set("0")
 update_frames_frame()
 textures_treeview.bind("<<TreeviewSelect>>", update_frames_frame)
 
@@ -358,13 +363,15 @@ state_frame.grid(row=2, column=1, padx=(5, 20), pady=(5, 20), sticky="nsew")
 
 
 def update_state_frame(*_):
-    parent_iid = elements_treeview.parent(elements_treeview.selection()[0])
-    if parent_iid != "":
-        selected_state = f"{elements_treeview.item(parent_iid)['text']} - {elements_treeview.item(elements_treeview.selection()[0])['text']}"
-        state_frame.config(text=selected_state)
+    if elements_treeview.selection() != ():
+        parent_iid = elements_treeview.parent(elements_treeview.selection()[0])
+        if parent_iid != "":
+            selected_state = f"{elements_treeview.item(parent_iid)['text']} - {elements_treeview.item(elements_treeview.selection()[0])['text']}"
+            state_frame.config(text=selected_state)
+    else:
+        state_frame.config(text="")
 
 
-elements_treeview.selection_set("0")
 update_state_frame()
 elements_treeview.bind("<<TreeviewSelect>>", update_state_frame)
 
