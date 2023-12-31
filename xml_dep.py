@@ -36,3 +36,31 @@ def remove_element_by_name(
         exit(
             f'{Fore.RED}>> Error: "<{element_name}>" can\'t be deleted, check the integrity of the file{Fore.RESET}'
         )
+
+
+def remove_elements_by_attribute(
+    element_root: Et.Element,
+    attribute_key: str,
+    attribute_value: str,
+    file: Et.ElementTree,
+    file_path: str,
+):
+    for element in element_root:
+        if element.get(attribute_key) == attribute_value:
+            element_root.remove(element)
+
+    file.write(file_path)
+
+    deleted = True
+    for element in element_root:
+        if element.get(attribute_key) == attribute_value:
+            deleted = False
+
+    if deleted:
+        log(
+            f"'<{element_root.tag}>/<foos {attribute_key}=\"{attribute_value}\">' supprimés avec succès"
+        )
+    else:
+        exit(
+            f"{Fore.RED}>> Error: '<{element_root.tag}>/<foo {attribute_key}=\"{attribute_value}\">' can't be deleted, check the integrity of the file{Fore.RESET}"
+        )
