@@ -241,8 +241,35 @@ textures_treeview.bind("<<TreeviewSelect>>", update_frames_frame)
 add_frames_button = ttk.Button(frames_frame, text="Add", style="Accent.TButton")
 add_frames_button.pack(side=tk.LEFT, pady=5)
 
+
 # Remove frames button
-remove_frames_button = ttk.Button(frames_frame, text="Remove")
+def remove_frame():
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    if frames_treeview.selection() != ():
+        textures_root = get_element_by_name_forced(
+            level_root, "textures", level_file, level_file_path
+        )
+        selected_texture_name = textures_treeview.item(
+            textures_treeview.selection()[0]
+        )["text"]
+        frames_root = get_element_by_name_forced(
+            textures_root, selected_texture_name, level_file, level_file_path
+        )
+
+        selected_frame_path = frames_treeview.item(frames_treeview.selection()[0])[
+            "text"
+        ]
+
+        remove_elements_by_attribute(
+            frames_root, "path", selected_frame_path, level_file, level_file_path
+        )
+
+        root.event_generate("<<uptate_all_data>>")
+
+
+remove_frames_button = ttk.Button(frames_frame, text="Remove", command=remove_frame)
 remove_frames_button.pack(side=tk.RIGHT, pady=5)
 
 ## Elements Section
