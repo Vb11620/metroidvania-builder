@@ -140,8 +140,9 @@ def delete_texture():
     textures_root = get_element_by_name_forced(
         level_root, "textures", level_file, level_file_path
     )
-    selected_texture_iid = textures_treeview.selection()[0]
-    selected_texture_name = textures_treeview.item(selected_texture_iid)["text"]
+    selected_texture_name = textures_treeview.item(textures_treeview.selection()[0])[
+        "text"
+    ]
 
     remove_element_by_name(
         textures_root, selected_texture_name, level_file, level_file_path
