@@ -150,6 +150,9 @@ def delete_texture():
 
         root.event_generate("<<uptate_all_data>>")
 
+    else:
+        minor_log("No element selected")
+
 
 delete_texture_button = ttk.Button(
     textures_frame, text="Delete", command=delete_texture
@@ -268,6 +271,9 @@ def remove_frame():
 
         root.event_generate("<<uptate_all_data>>")
 
+    else:
+        minor_log("No element selected")
+
 
 remove_frames_button = ttk.Button(frames_frame, text="Remove", command=remove_frame)
 remove_frames_button.pack(side=tk.RIGHT, pady=5)
@@ -383,6 +389,9 @@ def delete_element_or_state():
             )
 
         root.event_generate("<<uptate_all_data>>")
+
+    else:
+        minor_log("No element selected")
 
 
 delete_element_button = ttk.Button(
