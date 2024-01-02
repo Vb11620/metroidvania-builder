@@ -150,6 +150,9 @@ def delete_texture():
 
         root.event_generate("<<uptate_all_data>>")
 
+    else:
+        minor_log("No element selected")
+
 
 delete_texture_button = ttk.Button(
     textures_frame, text="Delete", command=delete_texture
@@ -268,6 +271,9 @@ def remove_frame():
 
         root.event_generate("<<uptate_all_data>>")
 
+    else:
+        minor_log("No element selected")
+
 
 remove_frames_button = ttk.Button(frames_frame, text="Remove", command=remove_frame)
 remove_frames_button.pack(side=tk.RIGHT, pady=5)
@@ -344,8 +350,53 @@ def update_elements_treeview():
 
 update_elements_treeview()
 
+
 # Delete element button
-delete_element_button = ttk.Button(elements_frame, text="Delete")
+def delete_element_or_state():
+    level_file = Et.parse(level_file_path)
+    level_root = level_file.getroot()
+
+    if elements_treeview.selection() != ():
+        parent_iid = elements_treeview.parent(elements_treeview.selection()[0])
+        if parent_iid == "":
+            selected_state_parent_name = elements_treeview.item(
+                elements_treeview.selection()[0]
+            )["text"]
+
+            elements_root = get_element_by_name_forced(
+                level_root, "elements", level_file, level_file_path
+            )
+
+            remove_element_by_name(
+                elements_root, selected_state_parent_name, level_file, level_file_path
+            )
+
+        else:
+            selected_state_parent_name = elements_treeview.item(parent_iid)["text"]
+            selected_state_name = elements_treeview.item(
+                elements_treeview.selection()[0]
+            )["text"]
+
+            elements_root = get_element_by_name_forced(
+                level_root, "elements", level_file, level_file_path
+            )
+            states_root = get_element_by_name_forced(
+                elements_root, selected_state_parent_name, level_file, level_file_path
+            )
+
+            remove_element_by_name(
+                states_root, selected_state_name, level_file, level_file_path
+            )
+
+        root.event_generate("<<uptate_all_data>>")
+
+    else:
+        minor_log("No element selected")
+
+
+delete_element_button = ttk.Button(
+    elements_frame, text="Delete", command=delete_element_or_state
+)
 delete_element_button.pack(side=tk.LEFT, padx=(0, 5), pady=5)
 
 # Element entry
