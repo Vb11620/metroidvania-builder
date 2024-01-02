@@ -31,7 +31,7 @@ def remove_element_by_name(
         file.write(file_path)
 
     if element_root.find(element_name) is None:
-        log(f'"<{element_root.tag}>/<{element_name}>" supprimé avec succès')
+        achievement_log(f'"<{element_root.tag}>/<{element_name}>" supprimé avec succès')
     else:
         exit(
             f'{Fore.RED}>> Error: "<{element_name}>" can\'t be deleted, check the integrity of the file{Fore.RESET}'
@@ -57,7 +57,7 @@ def remove_elements_by_attribute(
             deleted = False
 
     if deleted:
-        log(
+        achievement_log(
             f"'<{element_root.tag}>/<foos {attribute_key}=\"{attribute_value}\">' supprimés avec succès"
         )
     else:
