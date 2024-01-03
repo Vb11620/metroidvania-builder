@@ -52,9 +52,11 @@ def update_sound_button():
 
 
 def select_sound():
-    sound_path_str = tkinter.filedialog.askopenfilename(
-        initialdir="res/levels/",
-        filetypes=(("MP3 Sounds", "*.mp3"), ("All files", "*.*")),
+    sound_path_str = os.path.relpath(
+        tkinter.filedialog.askopenfilename(
+            initialdir="res/levels/",
+            filetypes=(("MP3 Sounds", "*.mp3"), ("All files", "*.*")),
+        )
     )
     if isinstance(sound_path_str, str):
         level_file = Et.parse(level_file_path)
