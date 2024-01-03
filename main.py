@@ -264,9 +264,11 @@ textures_treeview.bind("<<TreeviewSelect>>", update_frames_frame)
 # Add frames button
 def add_frame():
     if textures_treeview.selection() != ():
-        new_frame_path = tkinter.filedialog.askopenfilename(
-            initialdir="res/levels/",
-            filetypes=(("PNG Images", "*.png"), ("All files", "*.*")),
+        new_frame_path = os.path.relpath(
+            tkinter.filedialog.askopenfilename(
+                initialdir="res/levels/",
+                filetypes=(("PNG Images", "*.png"), ("All files", "*.*")),
+            )
         )
         if isinstance(new_frame_path, str):
             level_file = Et.parse(level_file_path)
