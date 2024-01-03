@@ -54,7 +54,7 @@ def update_sound_button():
 def select_sound():
     sound_path_str = tkinter.filedialog.askopenfilename(
         initialdir="res/levels/",
-        filetypes=(("Level files", "*.xml"), ("All files", "*.*")),
+        filetypes=(("MP3 Sounds", "*.mp3"), ("All files", "*.*")),
     )
     if isinstance(sound_path_str, str):
         level_file = Et.parse(level_file_path)
@@ -260,8 +260,51 @@ def update_frames_frame(*_):
 update_frames_frame()
 textures_treeview.bind("<<TreeviewSelect>>", update_frames_frame)
 
+
 # Add frames button
-add_frames_button = ttk.Button(frames_frame, text="Add", style="Accent.TButton")
+def add_frame():
+    if textures_treeview.selection() != ():
+        new_frame_path = tkinter.filedialog.askopenfilename(
+            initialdir="res/levels/",
+            filetypes=(("PNG Images", "*.png"), ("All files", "*.*")),
+        )
+        if isinstance(new_frame_path, str):
+            level_file = Et.parse(level_file_path)
+            level_root = level_file.getroot()
+            selected_texture = textures_treeview.item(textures_treeview.selection()[0])[
+                "text"
+            ]
+
+            textures_root = get_element_by_name_forced(
+                level_root, "textures", level_file, level_file_path
+            )
+            frames_root = get_element_by_name_forced(
+                textures_root, selected_texture, level_file, level_file_path
+            )
+            if new_frame_path != "":
+                Et.SubElement(frames_root, "frame").set("path", new_frame_path)
+                level_file.write(level_file_path)
+
+                created = False
+                for element in frames_root:
+                    if element.get("path") == new_frame_path:
+                        created = True
+                if created:
+                    achievement_log(
+                        f'"<frame path="{new_frame_path}">" créé avec succès'
+                    )
+                else:
+                    exit(
+                        f'{Fore.RED}>> Error: "<frame path="{new_frame_path}">" can\'t be created, check the integrity of the file{Fore.RESET}'
+                    )
+        root.event_generate("<<uptate_all_data>>")
+    else:
+        minor_log("No texture selected")
+
+
+add_frames_button = ttk.Button(
+    frames_frame, text="Add", style="Accent.TButton", command=add_frame
+)
 add_frames_button.pack(side=tk.LEFT, pady=5)
 
 
