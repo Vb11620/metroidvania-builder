@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.filedialog
-from tkinter import StringVar, ttk
+from tkinter import StringVar, ttk, simpledialog
 import os
 
 
@@ -403,9 +403,12 @@ def update_elements_treeview():
 
     iid = 0
     for element in elements_list:
-        elements_treeview.insert(
-            "", "end", str(iid), text=element[0], values=element[1]
-        )
+        if element[1] is not None:
+            elements_treeview.insert(
+                "", "end", str(iid), text=element[0], values=element[1]
+            )
+        else:
+            critical_error(f"Level file broken, '{element[0]}' does not have id")
         parent = iid
         for state in element[2:]:
             iid += 1
@@ -471,13 +474,45 @@ create_element_entry = ttk.Entry(
 )
 create_element_entry.pack(side=tk.LEFT, pady=5, fill="x", expand=True)
 
-# Create element button
-create_element_button = ttk.Button(elements_frame, text="Create state")
-create_element_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
-
 # Create state button
-create_state_button = ttk.Button(elements_frame, text="Create element")
+create_state_button = ttk.Button(elements_frame, text="Create state")
 create_state_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
+
+
+# Create element button
+def create_element():
+    if create_element_entry.get() != "":
+        new_element_id = simpledialog.askstring(
+            title="Element Id",
+            prompt=f"What's the ID of {create_element_entry.get()}",
+            parent=root,
+        )
+        if new_element_id is not None:
+            if new_element_id == "":
+                new_element_id = "default"
+        else:
+            new_element_id = "default"
+        level_file = Et.parse(level_file_path)
+        level_root = level_file.getroot()
+
+        elements_root = get_element_by_name_forced(
+            level_root, "elements", level_file, level_file_path
+        )
+
+        get_element_by_name_forced(
+            elements_root, create_element_entry.get(), level_file, level_file_path
+        ).set("id", new_element_id)
+        level_file.write(level_file_path)
+
+        root.event_generate("<<uptate_all_data>>")
+    else:
+        minor_log("No name given")
+
+
+create_element_button = ttk.Button(
+    elements_frame, text="Create element", command=create_element
+)
+create_element_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
 
 
 # Activate the buttons when create_element_entry is fill
