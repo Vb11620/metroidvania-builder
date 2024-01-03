@@ -176,7 +176,7 @@ def create_texture():
             level_root, "textures", level_file, level_file_path
         )
 
-        create_element(
+        create_element_if_doesnt_exist(
             textures_root, create_texture_entry.get(), level_file, level_file_path
         )
 

@@ -3,7 +3,7 @@ import xml.etree.ElementTree as Et
 from miscellaneous_dep import *
 
 
-def create_element(
+def create_element_if_doesnt_exist(
     element_root: Et.Element, element_name: str, file: Et.ElementTree, file_path: str
 ):
     element = element_root.find(element_name)
