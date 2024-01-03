@@ -165,10 +165,30 @@ create_texture_entry = ttk.Entry(
     textures_frame, textvariable=create_texture_entry_stringVar
 )
 create_texture_entry.pack(side=tk.LEFT, pady=5, fill="x", expand=True)
-# TODO: add auto placeholder
+
+
+def create_texture():
+    if create_texture_entry.get() != "":
+        level_file = Et.parse(level_file_path)
+        level_root = level_file.getroot()
+
+        textures_root = get_element_by_name_forced(
+            level_root, "textures", level_file, level_file_path
+        )
+
+        create_element(
+            textures_root, create_texture_entry.get(), level_file, level_file_path
+        )
+
+        root.event_generate("<<uptate_all_data>>")
+    else:
+        minor_log("No name given")
+
 
 # Create texture button
-create_texture_button = ttk.Button(textures_frame, text="Create")
+create_texture_button = ttk.Button(
+    textures_frame, text="Create", command=create_texture
+)
 create_texture_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
 
 
@@ -405,7 +425,6 @@ create_element_entry = ttk.Entry(
     elements_frame, textvariable=create_element_entry_stringVar
 )
 create_element_entry.pack(side=tk.LEFT, pady=5, fill="x", expand=True)
-# TODO: add auto placeholder
 
 # Create element button
 create_element_button = ttk.Button(elements_frame, text="Create state")
