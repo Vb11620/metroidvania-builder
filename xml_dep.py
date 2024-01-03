@@ -3,7 +3,7 @@ import xml.etree.ElementTree as Et
 from miscellaneous_dep import *
 
 
-def add_element(
+def create_element(
     element_root: Et.Element, element_name: str, file: Et.ElementTree, file_path: str
 ):
     element = element_root.find(element_name)
@@ -18,6 +18,8 @@ def add_element(
             exit(
                 f'{Fore.RED}>> Error: "<{element_name}>" can\'t be created, check the integrity of the file{Fore.RESET}'
             )
+    else:
+        minor_log(f'"<{element_root.tag}>/<{element_name}>" existe déjà')
 
 
 def get_element_by_name_forced(
