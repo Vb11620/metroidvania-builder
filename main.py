@@ -474,8 +474,43 @@ create_element_entry = ttk.Entry(
 )
 create_element_entry.pack(side=tk.LEFT, pady=5, fill="x", expand=True)
 
+
 # Create state button
-create_state_button = ttk.Button(elements_frame, text="Create state")
+def create_state():
+    if create_element_entry.get() != "":
+        if elements_treeview.selection() != ():
+            parent_iid = elements_treeview.parent(elements_treeview.selection()[0])
+            if parent_iid == "":
+                parent_iid = elements_treeview.selection()[0]
+
+            level_file = Et.parse(level_file_path)
+            level_root = level_file.getroot()
+
+            elements_root = get_element_by_name_forced(
+                level_root, "elements", level_file, level_file_path
+            )
+
+            states_root = get_element_by_name_forced(
+                elements_root,
+                elements_treeview.item(parent_iid)["text"],
+                level_file,
+                level_file_path,
+            )
+
+            create_element_if_doesnt_exist(
+                states_root, create_element_entry.get(), level_file, level_file_path
+            )
+
+            root.event_generate("<<uptate_all_data>>")
+        else:
+            minor_log("No element selected")
+    else:
+        minor_log("No name given")
+
+
+create_state_button = ttk.Button(
+    elements_frame, text="Create state", command=create_state
+)
 create_state_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
 
 
