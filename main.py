@@ -519,7 +519,10 @@ create_element_button.pack(side=tk.RIGHT, padx=(5, 0), pady=5)
 def update_elements_buttons(*_):
     if create_element_entry.get() != "":
         create_element_button["style"] = "Accent.TButton"
-        create_state_button["style"] = "Accent.TButton"
+        if elements_treeview.selection() != ():
+            create_state_button["style"] = "Accent.TButton"
+        else:
+            create_state_button["style"] = "TButton"
     else:
         create_element_button["style"] = "TButton"
         create_state_button["style"] = "TButton"
@@ -551,6 +554,7 @@ def update_state_frame(*_):
 
 update_state_frame()
 elements_treeview.bind("<<TreeviewSelect>>", update_state_frame)
+elements_treeview.bind("<<TreeviewSelect>>", update_elements_buttons)
 
 
 # Function to uptate all
