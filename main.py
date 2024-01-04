@@ -543,6 +543,7 @@ state_frame.grid(row=2, column=1, padx=(5, 20), pady=(5, 20), sticky="nsew")
 
 
 def update_state_frame(*_):
+    update_elements_buttons()
     if elements_treeview.selection() != ():
         parent_iid = elements_treeview.parent(elements_treeview.selection()[0])
         if parent_iid != "":
@@ -554,7 +555,6 @@ def update_state_frame(*_):
 
 update_state_frame()
 elements_treeview.bind("<<TreeviewSelect>>", update_state_frame)
-elements_treeview.bind("<<TreeviewSelect>>", update_elements_buttons)
 
 
 # Function to uptate all
